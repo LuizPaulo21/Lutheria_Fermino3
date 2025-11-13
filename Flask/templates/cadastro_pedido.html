@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incluir Pedido - Lutheria Fermino 2.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            padding-top: 56px; 
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .dropdown-item i, .nav-link i {
+            margin-right: 8px;
+        }
+        .form-section-title {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+        
+        input[readonly] {
+            background-color: #e9ecef;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/inicio.html">
+                <i class="bi bi-hammer"></i> Lutheria Fermino 2.0
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownClientes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-people-fill"></i> Clientes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownClientes">
+                            <li><a class="dropdown-item" href="/cadastro_cliente.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_cliente.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_cliente.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPedidos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-box-seam-fill"></i> Pedidos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownPedidos">
+                            <li><a class="dropdown-item" href="/cadastro_pedido.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_pedido.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_pedido.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProdutos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-tags-fill"></i> Produtos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownProdutos">
+                            <li><a class="dropdown-item" href="/cadastro_produto.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_produto.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_produto.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownGrupos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-collection-fill"></i> Grupos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownGrupos">
+                            <li><a class="dropdown-item" href="/cadastro_grupo.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_grupo.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_grupo.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-gear-fill"></i> Configurações
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+ <div class="container mt-4">
+        <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+            <h1 class="h4"><i class="bi bi-journal-plus"></i> Incluir Novo Pedido</h1>
+            <a href="inicio.html" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <main>
+            <form id="formIncluirPedido" action="/create_pedido" method="POST" novalidate>
+                <h5 class="form-section-title">Dados do Pedido</h5>
+                <div class="row">
+                    <div class="col-md-7 mb-3 position-relative">
+                        <label for="nomeCliente" class="form-label">Cliente <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nomeCliente" name="nomeCliente" placeholder="Digite para buscar o cliente..." autocomplete="off" required>
+                        <!-- Campo Oculto para sugestão de clientes. -->
+                        <input type="hidden" id="clienteId" name="clienteId">
+                        <div id="sugestoesClientesDiv" class="list-group search-suggestions" style="display: none;"></div>
+                    </div>
+                    <input type="hidden" id="clienteSelecionadoDataInput" name="cliente_selecionado_data">
+                    <div class="col-md-5 mb-3">
+                        <label for="dataPedido" class="form-label">Data do Pedido <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="dataPedido" name="dataPedido" required>
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-7 mb-3">
+                        <label class="form-label">Tipo de Pedido <span class="text-danger">*</span></label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoPedido" id="tipoConserto" value="conserto" checked>
+                                <label class="form-check-label" for="tipoConserto">Conserto</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoPedido" id="tipoCompra" value="compra">
+                                <label class="form-check-label" for="tipoCompra">Compra de Item</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 mb-3" id="campoPrazoConserto">
+                        <label for="prazoConserto" class="form-label">Prazo para Conserto</label>
+                        <input type="date" class="form-control" id="prazoConserto" name="prazoConserto">
+                    </div>
+                </div>
+
+
+                <h5 class="form-section-title">Itens do Pedido</h5>
+                <div class="row align-items-end">
+                    <div class="col-md-5 mb-3 position-relative">
+                        <label for="nomeProdutoServico" class="form-label">Produto/Serviço <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nomeProdutoServico" name="nomeProdutoServico" placeholder="Digite para buscar o produto/serviço..." autocomplete="off" required>
+                        <!-- Campo Oculto para sugestão de produtos. -->
+                        <input type="hidden" id="produtoId" name="produtoId">
+                        <div id="sugestoesProduto" class="list-group search-suggestions" style="display: none;"></div>
+                    </div>
+                    <input type="hidden" id="produtoSelecionadoDataInput" name="produto_selecionado_data">
+                    <div class="col-md-2 mb-3">
+                        <label for="quantidade" class="form-label">Quantidade <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="quantidade" name="quantidade" value="1" min="1" required>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="valorUnitario" class="form-label">Valor Unit. (R$) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="valorUnitario" name="valorUnitario" step="0.01" min="0" placeholder="0.00" required>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="valorTotalItem" class="form-label">Valor Total do Item (R$)</label>
+                        <input type="text" class="form-control" id="valorTotalItem" name="valorTotalItem" placeholder="0.00" readonly>
+                    </div>
+                        <div class="col mb-3">
+                        <label for="valorTotalItem" class="form-label">RFID da peça</label>
+                        <input type="text" class="form-control" id="rfid" name="rfid" placeholder="Leia o RFID ou digite o código neste campo">
+                    </div>
+                </div>
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end">
+                    <div>{{msg}}</div>
+                    <button type="button" class="btn btn-outline-secondary me-2" onclick="window.location.href='index.html'">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle-fill"></i> Salvar Pedido
+                    </button>
+                </div>
+            </form>
+        </main>
+
+        <footer class="pt-3 mt-4 text-muted border-top">
+            &copy; 2024-2025 Lutheria Fermino
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="../static/sugestaocliente.js"></script>
+    <script src="../static/controleformulariopedidos.js"></script>
+    <script src="../static/sugestaoproduto.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excluir Cliente - Lutheria Fermino 2.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            padding-top: 56px; /* Ajuste para a navbar fixa */
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .dropdown-item i, .nav-link i {
+            margin-right: 8px;
+        }
+        .form-section-title {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+        .search-suggestions {
+            position: absolute;
+            z-index: 1000;
+            width: calc(100% - 2px);
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            border-top: none;
+            background-color: #fff;
+        }
+        .search-suggestions .list-group-item {
+            cursor: pointer;
+        }
+        .search-suggestions .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        #detalhesClienteDiv .form-control[readonly],
+        #detalhesClienteDiv .form-select[disabled] {
+            background-color: #e9ecef;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/inicio.html">
+                <i class="bi bi-hammer"></i> Lutheria Fermino 2.0
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownClientes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-people-fill"></i> Clientes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownClientes">
+                            <li><a class="dropdown-item" href="/cadastro_cliente.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_cliente.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_cliente.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPedidos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-box-seam-fill"></i> Pedidos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownPedidos">
+                            <li><a class="dropdown-item" href="/cadastro_pedido.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_pedido.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_pedido.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProdutos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-tags-fill"></i> Produtos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownProdutos">
+                            <li><a class="dropdown-item" href="/cadastro_produto.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_produto.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_produto.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownGrupos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-collection-fill"></i> Grupos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownGrupos">
+                            <li><a class="dropdown-item" href="/cadastro_grupo.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_grupo.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_grupo.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-gear-fill"></i> Configurações
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+            <h1 class="h4"><i class="bi bi-person-dash-fill"></i> Excluir Cliente</h1>
+            <a href="index.html" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <main>
+            <div class="row">
+                <div class="col-md-12 mb-3 position-relative">
+                    <label for="nomeClienteBusca" class="form-label">Buscar Cliente por Nome</label>
+                    <input type="text" class="form-control" id="nomeClienteBusca" placeholder="Digite o nome do cliente para buscar..." autocomplete="off">
+                    <input type="hidden" id="clienteIdParaExcluir">
+                    <div id="sugestoesClienteBusca" class="list-group search-suggestions" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div id="detalhesClienteDiv" style="display: none;">
+                <hr>
+                <h5 class="form-section-title">Dados do Cliente Selecionado</h5>
+                <div class="mb-3">
+                    <label class="form-label">Tipo de Cliente:</label>
+                    <span id="tipoClienteDisplay" class="fw-bold"></span>
+                </div>
+
+                <div id="dadosPessoaFisicaDisplay" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="cpfDisplay" class="form-label">CPF</label>
+                            <input type="text" class="form-control" id="cpfDisplay" readonly>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="nomeCompletoDisplay" class="form-label">Nome Completo</label>
+                            <input type="text" class="form-control" id="nomeCompletoDisplay" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dadosPessoaJuridicaDisplay" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="cnpjDisplay" class="form-label">CNPJ</label>
+                            <input type="text" class="form-control" id="cnpjDisplay" readonly>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="razaoSocialDisplay" class="form-label">Razão Social</label>
+                            <input type="text" class="form-control" id="razaoSocialDisplay" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="nomeFantasiaDisplay" class="form-label">Nome Fantasia</label>
+                            <input type="text" class="form-control" id="nomeFantasiaDisplay" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="form-section-title mt-3">Contato</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="telefoneDisplay" class="form-label">Telefone</label>
+                        <input type="tel" class="form-control" id="telefoneDisplay" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="emailDisplay" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="emailDisplay" readonly>
+                    </div>
+                </div>
+
+                <h6 class="form-section-title mt-3">Endereço</h6>
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <label for="cepDisplay" class="form-label">CEP</label>
+                        <input type="text" class="form-control" id="cepDisplay" readonly>
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        <label for="logradouroDisplay" class="form-label">Logradouro</label>
+                        <input type="text" class="form-control" id="logradouroDisplay" readonly>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="numeroDisplay" class="form-label">Número</label>
+                        <input type="text" class="form-control" id="numeroDisplay" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="complementoDisplay" class="form-label">Complemento</label>
+                        <input type="text" class="form-control" id="complementoDisplay" readonly>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="bairroDisplay" class="form-label">Bairro</label>
+                        <input type="text" class="form-control" id="bairroDisplay" readonly>
+                    </div>
+                     <div class="col-md-3 mb-3">
+                        <label for="cidadeDisplay" class="form-label">Cidade</label>
+                        <input type="text" class="form-control" id="cidadeDisplay" readonly>
+                    </div>
+                    <div class="col-md-1 mb-3">
+                        <label for="ufDisplay" class="form-label">UF</label>
+                        <input type="text" class="form-control" id="ufDisplay" readonly>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-danger" id="btnExcluirCliente" disabled>
+                        <i class="bi bi-trash-fill"></i> Excluir Cliente Permanentemente
+                    </button>
+                </div>
+            </div>
+            <div id="mensagemStatus" class="mt-3"></div>
+        </main>
+
+        <footer class="pt-3 mt-4 text-muted border-top">
+            &copy; 2024-2025 Lutheria Fermino
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const nomeClienteBuscaInput = document.getElementById('nomeClienteBusca');
+            const clienteIdParaExcluirInput = document.getElementById('clienteIdParaExcluir');
+            const sugestoesClienteBuscaDiv = document.getElementById('sugestoesClienteBusca');
+            const detalhesClienteDiv = document.getElementById('detalhesClienteDiv');
+            const btnExcluirCliente = document.getElementById('btnExcluirCliente');
+            const mensagemStatusDiv = document.getElementById('mensagemStatus');
+
+            // Campos de display de Pessoa Física
+            const dadosPfDisplay = document.getElementById('dadosPessoaFisicaDisplay');
+            const cpfDisplay = document.getElementById('cpfDisplay');
+            const nomeCompletoDisplay = document.getElementById('nomeCompletoDisplay');
+
+            // Campos de display de Pessoa Jurídica
+            const dadosPjDisplay = document.getElementById('dadosPessoaJuridicaDisplay');
+            const cnpjDisplay = document.getElementById('cnpjDisplay');
+            const razaoSocialDisplay = document.getElementById('razaoSocialDisplay');
+            const nomeFantasiaDisplay = document.getElementById('nomeFantasiaDisplay');
+            
+            // Outros campos de display
+            const tipoClienteDisplay = document.getElementById('tipoClienteDisplay');
+            const telefoneDisplay = document.getElementById('telefoneDisplay');
+            const emailDisplay = document.getElementById('emailDisplay');
+            const cepDisplay = document.getElementById('cepDisplay');
+            const logradouroDisplay = document.getElementById('logradouroDisplay');
+            const numeroDisplay = document.getElementById('numeroDisplay');
+            const complementoDisplay = document.getElementById('complementoDisplay');
+            const bairroDisplay = document.getElementById('bairroDisplay');
+            const cidadeDisplay = document.getElementById('cidadeDisplay');
+            const ufDisplay = document.getElementById('ufDisplay');
+
+
+            // --- DADOS MOCADOS (SIMULAÇÃO DE BANCO DE DADOS) ---
+            // Estes dados deveriam vir da sua API Flask (`GET /api/clientes` e `GET /api/clientes/{id}`)
+            const clientesMock = [
+                { _id: 'CLI001', tipoCliente: 'pf', nome: 'João da Silva Musico', cpf: '123.456.789-00', nomeCompleto: 'João da Silva Musico', telefone: '(11) 98765-4321', email: 'joao.musico@email.com', endereco: { cep: '01000-001', logradouro: 'Rua das Cordas', numero: '10', complemento: 'Ap 1', bairro: 'Centro', cidade: 'São Paulo', uf: 'SP' } },
+                { _id: 'CLI002', tipoCliente: 'pj', nome: 'Estúdio GravaSom Ltda.', cnpj: '12.345.678/0001-99', razaoSocial: 'GravaSom Produções Musicais Ltda.', nomeFantasia: 'Estúdio GravaSom', telefone: '(21) 99999-8888', email: 'contato@gravasom.com', endereco: { cep: '20000-002', logradouro: 'Av. das Oitavas', numero: '200', complemento: 'Sala 5', bairro: 'Lapa', cidade: 'Rio de Janeiro', uf: 'RJ' } },
+                { _id: 'CLI003', tipoCliente: 'pf', nome: 'Maria Oliveira Cantora', cpf: '987.654.321-00', nomeCompleto: 'Maria Oliveira Cantora', telefone: '(31) 91234-5678', email: 'maria.cantora@email.com', endereco: { cep: '30000-003', logradouro: 'Praça da Melodia', numero: '30', complemento: '', bairro: 'Savassi', cidade: 'Belo Horizonte', uf: 'MG' } }
+            ];
+
+            function limparDetalhesCliente() {
+                detalhesClienteDiv.style.display = 'none';
+                btnExcluirCliente.disabled = true;
+                clienteIdParaExcluirInput.value = '';
+                
+                [cpfDisplay, nomeCompletoDisplay, cnpjDisplay, razaoSocialDisplay, nomeFantasiaDisplay,
+                 tipoClienteDisplay, telefoneDisplay, emailDisplay, cepDisplay, logradouroDisplay,
+                 numeroDisplay, complementoDisplay, bairroDisplay, cidadeDisplay, ufDisplay].forEach(el => {
+                    if (el.tagName === 'INPUT') el.value = '';
+                    else if (el.tagName === 'SPAN') el.textContent = '';
+                 });
+                dadosPfDisplay.style.display = 'none';
+                dadosPjDisplay.style.display = 'none';
+                mensagemStatusDiv.innerHTML = '';
+            }
+
+            async function carregarDetalhesCliente(clienteId) {
+                limparDetalhesCliente();
+                const cliente = clientesMock.find(c => c._id === clienteId);
+
+                if (cliente) {
+                    clienteIdParaExcluirInput.value = cliente._id;
+                    tipoClienteDisplay.textContent = cliente.tipoCliente === 'pf' ? 'Pessoa Física' : 'Pessoa Jurídica';
+
+                    if (cliente.tipoCliente === 'pf') {
+                        cpfDisplay.value = cliente.cpf || '';
+                        nomeCompletoDisplay.value = cliente.nomeCompleto || '';
+                        dadosPfDisplay.style.display = 'block';
+                        dadosPjDisplay.style.display = 'none';
+                    } else { // pj
+                        cnpjDisplay.value = cliente.cnpj || '';
+                        razaoSocialDisplay.value = cliente.razaoSocial || '';
+                        nomeFantasiaDisplay.value = cliente.nomeFantasia || '';
+                        dadosPjDisplay.style.display = 'block';
+                        dadosPfDisplay.style.display = 'none';
+                    }
+
+                    telefoneDisplay.value = cliente.telefone || '';
+                    emailDisplay.value = cliente.email || '';
+                    if (cliente.endereco) {
+                        cepDisplay.value = cliente.endereco.cep || '';
+                        logradouroDisplay.value = cliente.endereco.logradouro || '';
+                        numeroDisplay.value = cliente.endereco.numero || '';
+                        complementoDisplay.value = cliente.endereco.complemento || '';
+                        bairroDisplay.value = cliente.endereco.bairro || '';
+                        cidadeDisplay.value = cliente.endereco.cidade || '';
+                        ufDisplay.value = cliente.endereco.uf || '';
+                    }
+                    
+                    detalhesClienteDiv.style.display = 'block';
+                    btnExcluirCliente.disabled = false;
+                } else {
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-warning">Cliente não encontrado para exibir detalhes.</div>`;
+                }
+            }
+
+            // Função de busca e autocomplete 
+            async function popularSugestoes(termo, dadosMock, inputElement, divSugestoes, callbackSelecao) {
+                divSugestoes.innerHTML = '';
+                if (termo.length < 1) { 
+                    divSugestoes.style.display = 'none';
+                    limparDetalhesCliente(); 
+                    return;
+                }
+
+                divSugestoes.innerHTML = '<a href="#" class="list-group-item list-group-item-action disabled text-muted">Buscando...</a>';
+                divSugestoes.style.display = 'block';
+                
+ 
+                await new Promise(resolve => setTimeout(resolve, 300)); // Simula delay
+                const filtrados = dadosMock.filter(item => item.nome.toLowerCase().includes(termo.toLowerCase()));
+                
+                divSugestoes.innerHTML = ''; 
+
+                if (filtrados.length > 0) {
+                    filtrados.forEach(item => {
+                        const itemDiv = document.createElement('a');
+                        itemDiv.href = '#';
+                        itemDiv.classList.add('list-group-item', 'list-group-item-action');
+                        itemDiv.textContent = item.nome + (item.tipoCliente === 'pf' ? ` (CPF: ${item.cpf})` : ` (CNPJ: ${item.cnpj})`);
+                        itemDiv.setAttribute('data-id', item._id);
+
+                        itemDiv.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            inputElement.value = item.nome; // Preenche o campo de busca com o nome
+                            divSugestoes.innerHTML = '';
+                            divSugestoes.style.display = 'none';
+                            callbackSelecao(this.getAttribute('data-id')); // Chama o callback com o ID
+                        });
+                        divSugestoes.appendChild(itemDiv);
+                    });
+                } else {
+                    divSugestoes.innerHTML = '<a href="#" class="list-group-item list-group-item-action disabled text-muted">Nenhum cliente encontrado.</a>';
+                }
+            }
+
+            nomeClienteBuscaInput.addEventListener('keyup', function() {
+                popularSugestoes(
+                    this.value,
+                    clientesMock, // Usando mock. Substituir por chamada à API.
+                    nomeClienteBuscaInput,
+                    sugestoesClienteBuscaDiv,
+                    carregarDetalhesCliente // Callback para carregar detalhes após seleção
+                );
+            });
+            
+            // Fechar sugestões se clicar fora
+            document.addEventListener('click', function(e) {
+                if (!sugestoesClienteBuscaDiv.contains(e.target) && e.target !== nomeClienteBuscaInput) {
+                    sugestoesClienteBuscaDiv.style.display = 'none';
+                }
+            });
+
+            // Lógica de Exclusão
+            btnExcluirCliente.addEventListener('click', async function() {
+                const clienteId = clienteIdParaExcluirInput.value;
+                const nomeCliente = nomeCompletoDisplay.value || razaoSocialDisplay.value; // Pega o nome para a confirmação
+
+                if (!clienteId) {
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-danger">Nenhum cliente selecionado para exclusão.</div>`;
+                    return;
+                }
+
+                if (confirm(`Tem certeza que deseja excluir o cliente "${nomeCliente}" permanentemente? Esta ação não pode ser desfeita.`)) {
+                    // SIMULAÇÃO DE CHAMADA À API (DELETE /api/clientes/{clienteId})
+                    console.log(`Simulando exclusão do cliente ID: ${clienteId}`);
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-info">Excluindo cliente...</div>`;
+                    
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    const index = clientesMock.findIndex(c => c._id === clienteId);
+                    if (index > -1) {
+                        clientesMock.splice(index, 1);
+                    }
+                    
+                    // Fim da simulação de API
+                    
+                    // Em caso de sucesso da API real:
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-success">Cliente "${nomeCliente}" excluído com sucesso!</div>`;
+                    limparDetalhesCliente();
+                    nomeClienteBuscaInput.value = ''; // Limpa o campo de busca
+                    
+                    // Em caso de erro da API real:
+                    // mensagemStatusDiv.innerHTML = `<div class="alert alert-danger">Erro ao excluir cliente. Tente novamente.</div>`;
+                } else {
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-warning">Exclusão cancelada pelo usuário.</div>`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

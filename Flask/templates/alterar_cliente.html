@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterar Cliente - Lutheria Fermino 2.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            padding-top: 56px; /* Ajuste para a navbar fixa */
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .dropdown-item i, .nav-link i {
+            margin-right: 8px;
+        }
+        .form-section-title {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+        .search-suggestions {
+            position: absolute;
+            z-index: 1000;
+            width: calc(100% - 2px);
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            border-top: none;
+            background-color: #fff;
+        }
+        .search-suggestions .list-group-item {
+            cursor: pointer;
+        }
+        .search-suggestions .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        /* Inputs de apenas leitura para CPF/CNPJ se não forem alteráveis */
+        /* #cpf, #cnpj { background-color: #e9ecef; opacity: 1; } */
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/inicio.html">
+                <i class="bi bi-hammer"></i> Lutheria Fermino 2.0
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownClientes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-people-fill"></i> Clientes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownClientes">
+                            <li><a class="dropdown-item" href="/cadastro_cliente.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_cliente.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_cliente.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPedidos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-box-seam-fill"></i> Pedidos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownPedidos">
+                            <li><a class="dropdown-item" href="/cadastro_pedido.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_pedido.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_pedido.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProdutos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-tags-fill"></i> Produtos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownProdutos">
+                            <li><a class="dropdown-item" href="/cadastro_produto.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_produto.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_produto.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownGrupos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-collection-fill"></i> Grupos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownGrupos">
+                            <li><a class="dropdown-item" href="/cadastro_grupo.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_grupo.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_grupo.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-gear-fill"></i> Configurações
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+            <h1 class="h4"><i class="bi bi-person-gear"></i> Alterar Dados do Cliente</h1>
+            <a href="index.html" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </header>
+
+        <main>
+            <div class="row">
+                <div class="col-md-12 mb-3 position-relative">
+                    <label for="nomeClienteBusca" class="form-label">Buscar Cliente por Nome</label>
+                    <input type="text" class="form-control" id="nomeClienteBusca" placeholder="Digite o nome do cliente para buscar..." autocomplete="off">
+                    <input type="hidden" id="clienteIdParaAlterar">
+                    <div id="sugestoesClienteBusca" class="list-group search-suggestions" style="display: none;"></div>
+                </div>
+            </div>
+
+            <form id="formAlterarCliente" style="display: none;" novalidate>
+                <hr>
+                <h5 class="form-section-title">Editar Dados do Cliente</h5>
+
+                <div class="mb-3">
+                    <label class="form-label">Tipo de Cliente:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipoCliente" id="tipoPessoaFisica" value="pf" disabled>
+                        <label class="form-check-label" for="tipoPessoaFisica">Pessoa Física</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="tipoCliente" id="tipoPessoaJuridica" value="pj" disabled>
+                        <label class="form-check-label" for="tipoPessoaJuridica">Pessoa Jurídica</label>
+                    </div>
+                </div>
+
+                <div id="dadosPessoaFisica">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="cpf" class="form-label">CPF</label>
+                            <input type="text" class="form-control" id="cpf" name="cpf" placeholder="000.000.000-00" readonly>
+                             <small class="form-text text-muted">CPF não pode ser alterado.</small>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="nomeCompleto" class="form-label">Nome Completo <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nomeCompleto" name="nomeCompleto" required>
+                             <div class="invalid-feedback">Nome completo é obrigatório.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dadosPessoaJuridica">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="cnpj" class="form-label">CNPJ</label>
+                            <input type="text" class="form-control" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00" readonly>
+                            <small class="form-text text-muted">CNPJ não pode ser alterado.</small>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="razaoSocial" class="form-label">Razão Social <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="razaoSocial" name="razaoSocial" required>
+                             <div class="invalid-feedback">Razão Social é obrigatória.</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="nomeFantasia" class="form-label">Nome Fantasia</label>
+                            <input type="text" class="form-control" id="nomeFantasia" name="nomeFantasia">
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="form-section-title mt-3">Contato</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="telefone" class="form-label">Telefone <span class="text-danger">*</span></label>
+                        <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
+                        <div class="invalid-feedback">Telefone é obrigatório.</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="contato@exemplo.com" required>
+                         <div class="invalid-feedback">E-mail inválido ou obrigatório.</div>
+                    </div>
+                </div>
+
+                <h6 class="form-section-title mt-3">Endereço</h6>
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <label for="cep" class="form-label">CEP <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="cep" name="endereco[cep]" placeholder="00000-000" required>
+                        <div class="invalid-feedback">CEP é obrigatório.</div>
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        <label for="logradouro" class="form-label">Logradouro <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="logradouro" name="endereco[logradouro]" required>
+                        <div class="invalid-feedback">Logradouro é obrigatório.</div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="numero" class="form-label">Número <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="numero" name="endereco[numero]" required>
+                        <div class="invalid-feedback">Número é obrigatório.</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="complemento" class="form-label">Complemento</label>
+                        <input type="text" class="form-control" id="complemento" name="endereco[complemento]">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="bairro" class="form-label">Bairro <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="bairro" name="endereco[bairro]" required>
+                        <div class="invalid-feedback">Bairro é obrigatório.</div>
+                    </div>
+                     <div class="col-md-3 mb-3">
+                        <label for="cidade" class="form-label">Cidade <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="cidade" name="endereco[cidade]" required>
+                        <div class="invalid-feedback">Cidade é obrigatória.</div>
+                    </div>
+                    <div class="col-md-1 mb-3">
+                        <label for="uf" class="form-label">UF <span class="text-danger">*</span></label>
+                        <select class="form-select" id="uf" name="endereco[uf]" required>
+                            <option selected disabled value="">--</option>
+                            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option>
+                            <option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option>
+                            <option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+                            <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option>
+                            <option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option>
+                            <option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+                            <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                        </select>
+                        <div class="invalid-feedback">UF é obrigatória.</div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+                <div class="d-flex justify-content-end">
+                     <button type="button" class="btn btn-outline-secondary me-2" id="btnCancelarAlteracao">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="btnSalvarAlteracoesCliente">
+                        <i class="bi bi-check-circle-fill"></i> Salvar Alterações
+                    </button>
+                </div>
+            </form>
+            <div id="mensagemStatus" class="mt-3"></div>
+        </main>
+
+        <footer class="pt-3 mt-4 text-muted border-top">
+            &copy; 2024-2025 Lutheria Fermino
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const nomeClienteBuscaInput = document.getElementById('nomeClienteBusca');
+            const clienteIdParaAlterarInput = document.getElementById('clienteIdParaAlterar');
+            const sugestoesClienteBuscaDiv = document.getElementById('sugestoesClienteBusca');
+            
+            const formAlterarCliente = document.getElementById('formAlterarCliente');
+            const btnSalvarAlteracoesCliente = document.getElementById('btnSalvarAlteracoesCliente');
+            const btnCancelarAlteracao = document.getElementById('btnCancelarAlteracao');
+            const mensagemStatusDiv = document.getElementById('mensagemStatus');
+
+            // Campos do formulário de alteração
+            const tipoPessoaFisicaRadio = document.getElementById('tipoPessoaFisica');
+            const tipoPessoaJuridicaRadio = document.getElementById('tipoPessoaJuridica');
+            const dadosPessoaFisicaDiv = document.getElementById('dadosPessoaFisica');
+            const dadosPessoaJuridicaDiv = document.getElementById('dadosPessoaJuridica');
+            const cpfInput = document.getElementById('cpf');
+            const nomeCompletoInput = document.getElementById('nomeCompleto');
+            const cnpjInput = document.getElementById('cnpj');
+            const razaoSocialInput = document.getElementById('razaoSocial');
+            const nomeFantasiaInput = document.getElementById('nomeFantasia');
+            const telefoneInput = document.getElementById('telefone');
+            const emailInput = document.getElementById('email');
+            const cepInput = document.getElementById('cep');
+            const logradouroInput = document.getElementById('logradouro');
+            const numeroInput = document.getElementById('numero');
+            const complementoInput = document.getElementById('complemento');
+            const bairroInput = document.getElementById('bairro');
+            const cidadeInput = document.getElementById('cidade');
+            const ufSelect = document.getElementById('uf');
+
+            const API_BASE_URL = 'http://127.0.0.1:5000/api';
+
+            function resetFormularioAlteracao() {
+                formAlterarCliente.style.display = 'none';
+                formAlterarCliente.classList.remove('was-validated');
+                btnSalvarAlteracoesCliente.disabled = true;
+                clienteIdParaAlterarInput.value = '';
+                formAlterarCliente.reset(); 
+                dadosPessoaFisicaDiv.style.display = 'none';
+                dadosPessoaJuridicaDiv.style.display = 'none';
+                mensagemStatusDiv.innerHTML = '';
+            }
+            
+            btnCancelarAlteracao.addEventListener('click', function() {
+                resetFormularioAlteracao();
+                nomeClienteBuscaInput.value = ''; 
+                nomeClienteBuscaInput.disabled = false;
+            });
+
+
+            async function carregarDetalhesCliente(clienteId) {
+                resetFormularioAlteracao();
+                mensagemStatusDiv.innerHTML = `<div class="alert alert-info">Carregando dados do cliente...</div>`;
+                nomeClienteBuscaInput.disabled = true; 
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/clientes/${clienteId}`);
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.error || `Erro HTTP: ${response.status}`);
+                    }
+                    const cliente = await response.json();
+
+                    if (cliente) {
+                        clienteIdParaAlterarInput.value = cliente._id; 
+
+                        if (cliente.tipoCliente === 'cpf' || cliente.cpf) {
+                            tipoPessoaFisicaRadio.checked = true;
+                            tipoPessoaJuridicaRadio.checked = false;
+                            dadosPessoaFisicaDiv.style.display = 'block';
+                            dadosPessoaJuridicaDiv.style.display = 'none';
+                            cpfInput.value = cliente.cpf || '';
+                            nomeCompletoInput.value = cliente.nomeCompleto || cliente.nome || '';
+                        } else if (cliente.tipoCliente === 'pj' || cliente.cnpj) {
+                            tipoPessoaJuridicaRadio.checked = true;
+                            tipoPessoaFisicaRadio.checked = false;
+                            dadosPessoaJuridicaDiv.style.display = 'block';
+                            dadosPessoaFisicaDiv.style.display = 'none';
+                            cnpjInput.value = cliente.cnpj || '';
+                            razaoSocialInput.value = cliente.razaoSocial || cliente.nome || '';
+                            nomeFantasiaInput.value = cliente.nomeFantasia || '';
+                        }
+
+                        telefoneInput.value = cliente.telefone || '';
+                        emailInput.value = cliente.email || '';
+
+                        if (cliente.endereco) {
+                            cepInput.value = cliente.endereco.cep || '';
+                            logradouroInput.value = cliente.endereco.logradouro || '';
+                            numeroInput.value = cliente.endereco.numero || '';
+                            complementoInput.value = cliente.endereco.complemento || '';
+                            bairroInput.value = cliente.endereco.bairro || '';
+                            cidadeInput.value = cliente.endereco.cidade || '';
+                            ufSelect.value = cliente.endereco.uf || '';
+                        }
+                        
+                        formAlterarCliente.style.display = 'block';
+                        btnSalvarAlteracoesCliente.disabled = false;
+                        mensagemStatusDiv.innerHTML = ''; // Limpa "Carregando..."
+                    } else {
+                        throw new Error("Cliente não encontrado ou dados incompletos retornados pela API.");
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar detalhes do cliente:", error);
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-danger">Erro ao carregar dados do cliente: ${error.message}</div>`;
+                    nomeClienteBuscaInput.disabled = false; // Reabilita busca em caso de erro
+                }
+            }
+
+            async function popularSugestoes(termo) {
+                sugestoesClienteBuscaDiv.innerHTML = '';
+                if (termo.length < 2) {
+                    sugestoesClienteBuscaDiv.style.display = 'none';
+                    resetFormularioAlteracao();
+                    return;
+                }
+
+                sugestoesClienteBuscaDiv.innerHTML = '<a href="#" class="list-group-item list-group-item-action disabled text-muted">Buscando...</a>';
+                sugestoesClienteBuscaDiv.style.display = 'block';
+                
+                try {
+                    const response = await fetch(`${API_BASE_URL}/clientes?search=${encodeURIComponent(termo)}`);
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.error || `Erro HTTP: ${response.status}`);
+                    }
+                    const clientes = await response.json();
+                    
+                    sugestoesClienteBuscaDiv.innerHTML = ''; 
+
+                    if (clientes && clientes.length > 0) {
+                        clientes.forEach(cliente => {
+                            const itemDiv = document.createElement('a');
+                            itemDiv.href = '#';
+                            itemDiv.classList.add('list-group-item', 'list-group-item-action');
+                            // A API de busca deve retornar nome e um identificador (cpf/cnpj) para a sugestão
+                            itemDiv.textContent = `${cliente.nome} (${cliente.cpf || cliente.cnpj || 'ID: ' + cliente._id})`;
+                            itemDiv.setAttribute('data-id', cliente._id); 
+
+                            itemDiv.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                nomeClienteBuscaInput.value = cliente.nome; 
+                                sugestoesClienteBuscaDiv.innerHTML = '';
+                                sugestoesClienteBuscaDiv.style.display = 'none';
+                                carregarDetalhesCliente(this.getAttribute('data-id'));
+                            });
+                            sugestoesClienteBuscaDiv.appendChild(itemDiv);
+                        });
+                    } else {
+                        sugestoesClienteBuscaDiv.innerHTML = '<a href="#" class="list-group-item list-group-item-action disabled text-muted">Nenhum cliente encontrado.</a>';
+                    }
+                } catch (error) {
+                    console.error("Erro ao buscar sugestões de clientes:", error);
+                    sugestoesClienteBuscaDiv.innerHTML = `<a href="#" class="list-group-item list-group-item-action list-group-item-danger disabled">Erro ao buscar: ${error.message}</a>`;
+                }
+            }
+
+            nomeClienteBuscaInput.addEventListener('keyup', function() {
+                popularSugestoes(this.value);
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!sugestoesClienteBuscaDiv.contains(e.target) && e.target !== nomeClienteBuscaInput) {
+                    sugestoesClienteBuscaDiv.style.display = 'none';
+                }
+            });
+
+            formAlterarCliente.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (!formAlterarCliente.checkValidity()) {
+                    formAlterarCliente.classList.add('was-validated');
+                    return;
+                }
+                formAlterarCliente.classList.add('was-validated');
+
+                const clienteId = clienteIdParaAlterarInput.value;
+                if (!clienteId) {
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-danger">ID do cliente não encontrado. Selecione um cliente primeiro.</div>`;
+                    return;
+                }
+
+                const dadosCliente = {
+
+                    nomeCompleto: nomeCompletoInput.value,
+                    razaoSocial: razaoSocialInput.value,
+                    nomeFantasia: nomeFantasiaInput.value,
+                    telefone: telefoneInput.value,
+                    email: emailInput.value,
+                    endereco: {
+                        cep: cepInput.value,
+                        logradouro: logradouroInput.value,
+                        numero: numeroInput.value,
+                        complemento: complementoInput.value,
+                        bairro: bairroInput.value,
+                        cidade: cidadeInput.value,
+                        uf: ufSelect.value
+                    }
+                };
+                
+
+                if(tipoPessoaFisicaRadio.checked) {
+                    delete dadosCliente.razaoSocial;
+                    delete dadosCliente.nomeFantasia;
+                } else {
+                    delete dadosCliente.nomeCompleto;
+                }
+
+
+                mensagemStatusDiv.innerHTML = `<div class="alert alert-info">Salvando alterações...</div>`;
+                btnSalvarAlteracoesCliente.disabled = true;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/clientes/${clienteId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(dadosCliente),
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json();
+                        throw new Error(errData.error || `Erro HTTP: ${response.status}`);
+                    }
+                    const result = await response.json();
+                    
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-success">${result.message || 'Cliente alterado com sucesso!'}</div>`;
+                } catch (error) {
+                    console.error("Erro ao salvar alterações do cliente:", error);
+                    mensagemStatusDiv.innerHTML = `<div class="alert alert-danger">Erro ao salvar alterações: ${error.message}</div>`;
+                } finally {
+                    btnSalvarAlteracoesCliente.disabled = false; // Reabilita o botão após a tentativa
+                }
+            });
+        });
+    </script>
+</body>
+</html>

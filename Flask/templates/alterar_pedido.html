@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterar Pedido - Lutheria Fermino 2.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { padding-top: 56px; }
+        .navbar-brand { font-weight: bold; }
+        .dropdown-item i, .nav-link i { margin-right: 8px; }
+        .form-section-title { margin-top: 1.5rem; margin-bottom: 1rem; border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; }
+        .search-suggestions { position: absolute; z-index: 1000; width: calc(100% - 2px); max-height: 200px; overflow-y: auto; border: 1px solid #ced4da; border-top: none; background-color: #fff; }
+        .search-suggestions .list-group-item, #listaPedidosClienteTable tbody tr { cursor: pointer; }
+        .search-suggestions .list-group-item:hover, #listaPedidosClienteTable tbody tr:hover { background-color: #f8f9fa; }
+        input[readonly].form-control-plaintext { background-color: transparent; border: none; padding-left: 0; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/inicio.html">
+                <i class="bi bi-hammer"></i> Lutheria Fermino 2.0
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownClientes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-people-fill"></i> Clientes
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownClientes">
+                            <li><a class="dropdown-item" href="/cadastro_cliente.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_cliente.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_cliente.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPedidos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-box-seam-fill"></i> Pedidos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownPedidos">
+                            <li><a class="dropdown-item" href="/cadastro_pedido.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_pedido.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_pedido.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProdutos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-tags-fill"></i> Produtos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownProdutos">
+                            <li><a class="dropdown-item" href="/cadastro_produto.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_produto.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_produto.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownGrupos" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-collection-fill"></i> Grupos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownGrupos">
+                            <li><a class="dropdown-item" href="/cadastro_grupo.html"><i class="bi bi-plus-circle-fill"></i> Incluir</a></li>
+                            <li><a class="dropdown-item" href="/alterar_grupo.html"><i class="bi bi-pencil-fill"></i> Alterar</a></li>
+                            <li><a class="dropdown-item" href="/excluir_grupo.html"><i class="bi bi-trash-fill"></i> Excluir</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-gear-fill"></i> Configurações
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <header class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+            <h1 class="h4"><i class="bi bi-pencil-square"></i> Alterar Pedido</h1>
+            <a href="index.html" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Voltar</a>
+        </header>
+
+        <main>
+            <section id="buscaClienteSection">
+                <div class="row">
+                    <div class="col-md-12 mb-3 position-relative">
+                        <label for="nomeClienteBusca" class="form-label"><strong>Passo 1:</strong> Buscar Cliente por Nome</label>
+                        <input type="text" class="form-control" id="nomeClienteBusca" placeholder="Digite o nome do cliente..." autocomplete="off">
+                        <input type="hidden" id="clienteIdSelecionado">
+                        <div id="sugestoesClienteBusca" class="list-group search-suggestions" style="display: none;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="listaPedidosClienteSection" style="display: none;">
+                <h5 class="form-section-title"><strong>Passo 2:</strong> Selecione o Pedido de <span id="nomeClienteDisplayPedidos" class="text-primary"></span> para Alterar</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="listaPedidosClienteTable">
+                        <thead>
+                            <tr>
+                                <th>Data do Pedido</th>
+                                <th>Descrição/Produto Principal</th>
+                                <th>Valor Total (R$)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" id="btnVoltarBuscaCliente"><i class="bi bi-arrow-left-circle"></i> Voltar para Busca de Cliente</button>
+            </section>
+
+            <form id="formAlterarPedido" style="display: none;" novalidate>
+                <input type="hidden" id="pedidoIdParaAlterar">
+                <h5 class="form-section-title"><strong>Passo 3:</strong> Alterar Dados do Pedido <span id="idPedidoDisplay" class="text-primary"></span></h5>
+                
+                <div class="row">
+                    <div class="col-md-7 mb-3">
+                        <label class="form-label">Cliente:</label>
+                        <input type="text" class="form-control form-control-plaintext" id="clienteNomeDisplayForm" readonly>
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        <label for="dataPedido" class="form-label">Data do Pedido <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="dataPedido" name="dataPedido" required>
+                        <div class="invalid-feedback">Data do pedido é obrigatória.</div>
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-7 mb-3">
+                        <label class="form-label">Tipo de Pedido <span class="text-danger">*</span></label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoPedido" id="tipoConserto" value="conserto" required>
+                                <label class="form-check-label" for="tipoConserto">Conserto</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipoPedido" id="tipoCompra" value="compra" required>
+                                <label class="form-check-label" for="tipoCompra">Compra de Item</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 mb-3" id="campoPrazoConserto" style="display: none;">
+                        <label for="prazoConserto" class="form-label">Prazo para Conserto</label>
+                        <input type="date" class="form-control" id="prazoConserto" name="prazoConserto">
+                    </div>
+                </div>
+
+                <h6 class="form-section-title mt-3">Item do Pedido</h6>
+                <div class="row align-items-end">
+                    <div class="col-md-5 mb-3 position-relative">
+                        <label for="nomeProdutoServico" class="form-label">Produto/Serviço <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nomeProdutoServico" name="nomeProdutoServico" placeholder="Busque o produto/serviço..." autocomplete="off" required>
+                        <input type="hidden" id="produtoId" name="produtoId">
+                        <div id="sugestoesProduto" class="list-group search-suggestions" style="display: none;"></div>
+                        <div class="invalid-feedback">Produto/Serviço é obrigatório.</div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="quantidade" class="form-label">Quantidade <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="quantidade" name="quantidade" value="1" min="1" required>
+                        <div class="invalid-feedback">Quantidade deve ser no mínimo 1.</div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label for="valorUnitario" class="form-label">Valor Unit. (R$) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="valorUnitario" name="valorUnitario" step="0.01" min="0" placeholder="0.00" required>
+                        <div class="invalid-feedback">Valor unitário é obrigatório.</div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="valorTotalItem" class="form-label">Valor Total Item (R$)</label>
+                        <input type="text" class="form-control" id="valorTotalItem" name="valorTotalItem" readonly>
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" id="btnVoltarListaPedidos"><i class="bi bi-arrow-left-circle"></i> Voltar para Lista de Pedidos</button>
+                    <button type="submit" class="btn btn-primary" id="btnSalvarAlteracoesPedido"><i class="bi bi-check-circle-fill"></i> Salvar Alterações no Pedido</button>
+                </div>
+            </form>
+            <div id="mensagemStatus" class="mt-3"></div>
+        </main>
+
+        <footer class="pt-3 mt-4 text-muted border-top">&copy; 2024-2025 Lutheria Fermino</footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+    </script>
+</body>
+</html>
