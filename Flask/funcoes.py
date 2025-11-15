@@ -4,7 +4,8 @@ from pymongo.server_api import ServerApi
 import hashlib, os, dotenv
 from flask import current_app
 import pandas as pd
-from lifetimes.utils import summary_data_from_transaction_data, BetaGeoFitter
+from lifetimes.utils import summary_data_from_transaction_data
+from lifetimes import BetaGeoFitter
 import datetime as dt
 import os, dotenv
 import bson.json_util
@@ -270,10 +271,7 @@ def mldata():
                 pedidos_filtrados_df = pedidos_df[['cliente_id', 'datapedido',]]
                 
                 #Convertendo os dados do tipo object para os necessário para as funções do lifetimes
-                # 1. Converter a coluna 'datapedido' para o formato datetime
                 pedidos_filtrados_df['datapedido'] = pd.to_datetime(pedidos_filtrados_df['datapedido'], format="%d-%m-%Y")
-
-                # 2. (Opcional) Garantir que o ID do cliente seja uma string
                 pedidos_filtrados_df['cliente_id'] = pedidos_filtrados_df['cliente_id'].astype(str)
 
                 #previsão de pedidos
@@ -285,12 +283,24 @@ def mldata():
                 )
 
                 #Usando o beta geo fitter
-                bgf = BetaGeoFitter(penalizer_coef=0.0) # O penalizador ajuda a prevenir overfitting
-                # 2. Treinar o modelo
+                bgf = BetaGeoFitter(penalizer_coef=0.6) # campo utilizado para impedir overfitting dos dados
+                # treinando o modelo
                 bgf.fit(rfm_df['frequency'], rfm_df['recency'], rfm_df['T'])
                 print("Modelo BG/NBD treinado com sucesso!")
 
-                return "Deu Certo!!!"
+                #Aqui vamos prever quantos pedidos o cliente fará nos próximos 30 dias
+                t = 30  # Dias
+                rfm_df['pedidos_prox_30_dias'] = bgf.conditional_expected_number_of_purchases_up_to_time(
+                    t, 
+                    rfm_df['frequency'], 
+                    rfm_df['recency'], 
+                    rfm_df['T']
+                )
+
+                print("\nPedidos Previstos nos Próximos 30 Dias:")
+                print(rfm_df[['pedidos_prox_30_dias']].sort_values(by='pedidos_prox_30_dias', ascending=False).head())
+
+                return rfm_df.to_json()
                             
             except Exception as e:
                 print(f"Erro ao buscar pedidos no MongoDB: {e}")
