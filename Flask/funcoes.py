@@ -3,6 +3,19 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import hashlib, os, dotenv
 from flask import current_app
+import pandas as pd
+from lifetimes.utils import summary_data_from_transaction_data, BetaGeoFitter
+import datetime as dt
+import os, dotenv
+import bson.json_util
+
+
+# Carregar as variáveis de ambiente do arquivo .env
+login=os.getenv('user_MongoDB')
+password=os.getenv('password_MongoDB')
+uri = f"mongodb+srv://{login}:{password}@cluster0.25d5slc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+dotenv.load_dotenv()
 
 bp = Blueprint("funcoes", __name__, url_prefix="/")
 
@@ -202,28 +215,6 @@ def produto():
 #Função para salvar o pedido no banco de dados
 @bp.route('/create_pedido', methods=['POST'])
 def create_pedido():
-    # Verifica se o método da requisição é POST e se os campos necessários foram preenchidos
-    #if request.method == 'POST':
-        # # Obtém os dados do pedido do formulário
-        # data_pedido = request.form.get('dataPedido')
-        # cliente_id = request.form.get('clienteId')
-        # produto_id = request.form.get('produto_id')
-        # tipo_pedido = request.form.get('tipoPedido')
-        # prazo_Conserto = request.form.get('prazoConserto')
-        # quantidade = request.form.get('quantidade')
-        # valor_total = request.form.get('valorTotalItem')
-
-        # print(data_pedido)
-        # # Transforma os dados em um dicionário
-        # pedido_data = {
-        #     "data_pedido": data_pedido,
-        #     "tipo_pedido": tipo_pedido,
-        #     "cliente_id": cliente_id,
-        #     "produto_id": produto_id,
-        #     "prazo_conserto": prazo_Conserto,
-        #     "quantidade": quantidade,
-        #     "valor_total": valor_total
-        # }
     
         if request.is_json:
             dados_recebidos = request.get_json()
@@ -255,5 +246,54 @@ def create_pedido():
              except ValueError as ve:
                  msg = f"Erro de validação: {ve}"
                  return render_template('cadastro_pedido.html', msg=msg)
+             
+#Função para buscar dados de ML
+@bp.route('/mldata', methods=['GET'])
+def mldata():
+
+            db_name = "LutheriaFermino2"
+            collection_name = "pedidos"
+            # Cria um novo cliente MongoDB e se conecta com o servidor
+            client = MongoClient(uri, server_api=ServerApi('1'))
+
+            db = client[db_name]
+            collection = db[collection_name] 
+
+            #busca os pedidos no banco de dados
+            try:
+                cursor = collection.find({})
+                documentos = list(cursor)
+                retorno = bson.json_util.dumps(documentos)
+                
+                #monta um dataframe com os dados retornados e filtra as colunas necessárias
+                pedidos_df = pd.read_json(retorno)
+                pedidos_filtrados_df = pedidos_df[['cliente_id', 'datapedido',]]
+                
+                #Convertendo os dados do tipo object para os necessário para as funções do lifetimes
+                # 1. Converter a coluna 'datapedido' para o formato datetime
+                pedidos_filtrados_df['datapedido'] = pd.to_datetime(pedidos_filtrados_df['datapedido'], format="%d-%m-%Y")
+
+                # 2. (Opcional) Garantir que o ID do cliente seja uma string
+                pedidos_filtrados_df['cliente_id'] = pedidos_filtrados_df['cliente_id'].astype(str)
+
+                #previsão de pedidos
+                rfm_df = summary_data_from_transaction_data(
+                transactions= pedidos_filtrados_df,
+                customer_id_col='cliente_id',
+                datetime_col='datapedido',
+                freq='D'
+                )
+
+                #Usando o beta geo fitter
+                bgf = BetaGeoFitter(penalizer_coef=0.0) # O penalizador ajuda a prevenir overfitting
+                # 2. Treinar o modelo
+                bgf.fit(rfm_df['frequency'], rfm_df['recency'], rfm_df['T'])
+                print("Modelo BG/NBD treinado com sucesso!")
+
+                return "Deu Certo!!!"
+                            
+            except Exception as e:
+                print(f"Erro ao buscar pedidos no MongoDB: {e}")
+                return []
 
     
