@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+import Flask.funcoes as funcoes
 
 bp = Blueprint("routes", __name__, url_prefix="/")
 
@@ -11,7 +12,8 @@ def hello():
 #Rota da página inicial
 @bp.route('/inicio.html')
 def inicio():
-    return render_template("inicio.html")
+    lista_clientes_30_dias = funcoes.mldata() # Inicializa a lista vazia
+    return render_template("inicio.html", lista_clientes_30_dias=lista_clientes_30_dias)
 
 ################################
 # Seção de páginas de cadastro #

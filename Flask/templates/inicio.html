@@ -99,17 +99,29 @@
         <main>
             <h3>Estatisticas e previsões</h3>
             <div style="grid-template-columns: 1fr 1fr;" class="d-grid gap-3">
-            <div class="p-2 card">
+            <div class="p-4 card">
                 <h6>Necessidade de estoque</h6>
+                <li>Produto 3 : 158</li>
+                <li>Produto 1: 326</li>
+                <li>Produto 2: 478</li>
             </div>
-            <div class="p-2 card">
+            <div class="p-4 card">
                 <h6>Pedidos por região</h6>
+                <li>SP : 36</li>
+                <li>RJ: 58</li>
+                <li>MG: 77</li>
             </div>
-            <div class="p-2 card">
+            <div class="p-4 card">
                 <h6>Items mais pedidos</h6>
+                <li>Produto 3 : 74</li>
+                <li>Produto 1: 99</li>
+                <li>Produto 2: 112</li>
             </div>
-            <div class="p-2 card">
-                <h6>Próximos pedidos</h6>
+            <div class="p-4 card">
+                <h6>Pedidos nos próximos 30 dias</h6>
+                {% for cliente in lista_clientes_30_dias %}
+                    <li><strong>{{ cliente.nome_cliente }} | ID: {{ cliente.id_cliente }}</strong></li>
+                {% endfor %}
             </div>
             </div>
         </main>

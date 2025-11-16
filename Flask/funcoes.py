@@ -6,9 +6,10 @@ from flask import current_app
 import pandas as pd
 from lifetimes.utils import summary_data_from_transaction_data
 from lifetimes import BetaGeoFitter
-import datetime as dt
+import datetime
 import os, dotenv
 import bson.json_util
+from bson.objectid import ObjectId
 
 
 # Carregar as variáveis de ambiente do arquivo .env
@@ -249,7 +250,7 @@ def create_pedido():
                  return render_template('cadastro_pedido.html', msg=msg)
              
 #Função para buscar dados de ML
-@bp.route('/mldata', methods=['GET'])
+#@bp.route('/mldata', methods=['GET'])
 def mldata():
 
             db_name = "LutheriaFermino2"
@@ -268,22 +269,22 @@ def mldata():
                 
                 #monta um dataframe com os dados retornados e filtra as colunas necessárias
                 pedidos_df = pd.read_json(retorno)
-                pedidos_filtrados_df = pedidos_df[['cliente_id', 'datapedido',]]
+                pedidos_filtrados_df = pedidos_df[['id_cliente', 'datapedido',]]
                 
                 #Convertendo os dados do tipo object para os necessário para as funções do lifetimes
                 pedidos_filtrados_df['datapedido'] = pd.to_datetime(pedidos_filtrados_df['datapedido'], format="%d-%m-%Y")
-                pedidos_filtrados_df['cliente_id'] = pedidos_filtrados_df['cliente_id'].astype(str)
+                pedidos_filtrados_df['id_cliente'] = pedidos_filtrados_df['id_cliente'].astype(str)
 
                 #previsão de pedidos
                 rfm_df = summary_data_from_transaction_data(
                 transactions= pedidos_filtrados_df,
-                customer_id_col='cliente_id',
+                customer_id_col='id_cliente',
                 datetime_col='datapedido',
                 freq='D'
                 )
 
                 #Usando o beta geo fitter
-                bgf = BetaGeoFitter(penalizer_coef=0.6) # campo utilizado para impedir overfitting dos dados
+                bgf = BetaGeoFitter(penalizer_coef=0.01) # campo utilizado para impedir overfitting dos dados
                 # treinando o modelo
                 bgf.fit(rfm_df['frequency'], rfm_df['recency'], rfm_df['T'])
                 print("Modelo BG/NBD treinado com sucesso!")
@@ -297,13 +298,68 @@ def mldata():
                     rfm_df['T']
                 )
 
-                print("\nPedidos Previstos nos Próximos 30 Dias:")
-                print(rfm_df[['pedidos_prox_30_dias']].sort_values(by='pedidos_prox_30_dias', ascending=False).head())
+                # --- Seleção e Retorno dos Top 5 Clientes ---
+                
+                # Seleciona as colunas relevantes e ordena pela previsão
+                # Se houver menos de 5 clientes válidos, ele retornará todos que existem.
+                top_5_predicoes = rfm_df.sort_values(
+                    by='pedidos_prox_30_dias', 
+                    ascending=False
+                ).head(5)
 
-                return rfm_df.to_json()
+                # O índice é o cliente_id. Para retorná-lo no JSON como uma coluna chamada 'cliente_id',
+                # precisamos resetar o índice e renomear a coluna resultante (que será 'index')
+                top_5_predicoes = top_5_predicoes.reset_index()
+                top_5_predicoes.rename(columns={'index': 'id_cliente'}, inplace=True)
+
+
+                print(f"\nPedidos Previstos nos Próximos {t} Dias (Top 5):")
+                # Exibe as colunas desejadas para o log
+                print(top_5_predicoes[['id_cliente', 'pedidos_prox_30_dias', 'frequency', 'recency', 'T']])
+            
+                #Chamando a função para obter o nome do cliente
+                top_5_predicoes_lista = top_5_predicoes['id_cliente'].tolist() #convertendo para lista
+                top_5_predicoes['nome_cliente'] = get_client_name(top_5_predicoes_lista)
+
+                # Retorna apenas os Top 5 Clientes em formato JSON (lista de objetos),
+                # garantindo que o ID do cliente esteja explícito na chave 'cliente_id'.
+                lista_clientes_30_dias = top_5_predicoes.to_dict(orient='records')
+                return lista_clientes_30_dias
                             
             except Exception as e:
                 print(f"Erro ao buscar pedidos no MongoDB: {e}")
                 return []
 
+
+def get_client_name(client_id):
+    """Função auxiliar para obter o nome do cliente pelo ID."""
+
+    db_name = "LutheriaFermino2"
+    collection_name = "clientes"
     
+    try:
+        client = MongoClient(uri, server_api=ServerApi('1'))
+        db = client[db_name]
+        collection = db[collection_name]
+
+        cliente_resultado = []
+        print("IDs de clientes para busca de nome:", client_id)
+
+        for current_cliente_id in client_id: #para cada um dos itens da lista de id
+
+            try:
+                bson_id = ObjectId(current_cliente_id) #converter o id em objectId
+                cliente_doc = collection.find_one({"_id": bson_id}) #buscar no banco
+                if cliente_doc:
+                    cliente_resultado.append(cliente_doc['nome']) # se existe, adiciona o nome na lista
+                else:
+                    cliente_resultado.append('Cliente não encontrado') # se não existe, adiciona a mensagem
+            except Exception as e:
+                print(f"Erro ao converter ou buscar cliente com ID {current_cliente_id}: {e}") #log de erro
+                cliente_resultado.append('Erro ao buscar cliente')
+
+        return cliente_resultado
+
+    except Exception as e:
+        print(f"Erro ao buscar cliente: {e}")
+        return "Erro ao buscar cliente"
